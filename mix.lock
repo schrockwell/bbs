@@ -1,0 +1,3 @@
+%{
+  "antsy": {:hex, :antsy, "0.2.1", "a1acb55a01b14593c3d88f8f7a933c8a7ad85e9810bf72b1f83862223f6e9232", [:mix], [], "hexpm", "c31209d8528fa15abc235e0264c2cd53213e0780ce352a82ec0e733d157df495"},
+}
