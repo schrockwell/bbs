@@ -29,7 +29,7 @@ defmodule BBS.View do
   ]
 
   def print(view, iodata) do
-    :ok = :gen_tcp.send(view.socket, iodata)
+    Connection.send(view.connection_pid, iodata)
     view
   end
 

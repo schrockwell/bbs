@@ -29,6 +29,10 @@ defmodule BBS.Connection do
     GenServer.cast(pid, {:put_view_pid, view_pid})
   end
 
+  def send(pid, iodata) do
+    GenServer.cast(pid, {:send, iodata})
+  end
+
   @impl true
   def init(opts) do
     client_socket = Keyword.fetch!(opts, :socket)
@@ -123,6 +127,11 @@ defmodule BBS.Connection do
     Logger.info("Closing connection from #{state.client_ip}")
     :ok = :gen_tcp.close(state.socket)
     {:stop, :normal, state}
+  end
+
+  def handle_cast({:send, iodata}, state) do
+    :ok = :gen_tcp.send(state.socket, iodata)
+    {:noreply, state}
   end
 
   # defp handle_telnet_token({verb, _value} = option, state)

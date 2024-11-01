@@ -50,7 +50,7 @@ defmodule BBS.ViewServer do
       ) do
     case Prompt.put(prompt, data) do
       {:cont, prompt, echo} ->
-        :ok = :gen_tcp.send(state.socket, echo)
+        Connection.send(state.connection_pid, echo)
         {:noreply, %{state | view: View.put_private(view, :prompt, prompt)}}
 
       {:halt, value} ->
@@ -147,9 +147,16 @@ defmodule BBS.ViewServer do
   defp render_component(state, component) do
     iodata = component.module.render(component.view.assigns)
     {line, col} = component.position
-    :gen_tcp.send(state.socket, "\e[s" <> IO.ANSI.cursor(line, col))
-    :gen_tcp.send(state.socket, iodata)
-    :gen_tcp.send(state.socket, "\e[u")
+
+    Connection.send(state.connection_pid, [
+      # save cursor position
+      "\e[s",
+      IO.ANSI.cursor(line, col),
+      iodata,
+      # restore cursor position
+      "\e[u"
+    ])
+
     state
   end
 end
