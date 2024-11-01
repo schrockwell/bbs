@@ -3,19 +3,18 @@ defmodule BBS.Endpoint do
 
   require Logger
 
-  @port 23
-
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
   def init(opts) do
-    {:ok, socket} =
-      :gen_tcp.listen(@port, [:binary, active: true, reuseaddr: true])
-
     initial_view = Keyword.fetch!(opts, :initial_view)
+    port = Keyword.get(opts, :port, 23)
 
-    Logger.info("Listening on port #{@port}")
+    {:ok, socket} =
+      :gen_tcp.listen(port, [:binary, active: true, reuseaddr: true])
+
+    Logger.info("Listening on port #{port}")
 
     {:ok, %{socket: socket, initial_view: initial_view}, {:continue, :accept_connections}}
   end
