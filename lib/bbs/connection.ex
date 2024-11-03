@@ -46,6 +46,9 @@ defmodule BBS.Connection do
 
     Logger.info("Accepted connection from #{ip || "<unknown>"}")
 
+    # IAC WILL SGA
+    :gen_tcp.send(client_socket, "\xFF\xFB\x03")
+
     navigate(self(), initial_view, :initial)
 
     {:ok,
@@ -143,6 +146,7 @@ defmodule BBS.Connection do
   @iac 255
   @will 251
   @wont 252
+  @sga 3
   # @doo 253
   # @dont 254
 

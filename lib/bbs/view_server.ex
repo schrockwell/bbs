@@ -145,17 +145,16 @@ defmodule BBS.ViewServer do
   end
 
   defp render_component(state, component) do
-    iodata = component.module.render(component.view.assigns)
     {line, col} = component.position
 
-    Connection.send(state.connection_pid, [
-      # save cursor position
-      "\e[s",
-      IO.ANSI.cursor(line, col),
-      iodata,
-      # restore cursor position
-      "\e[u"
-    ])
+    # save cursor position and move to component position
+    Connection.send(state.connection_pid, ["\e[s", IO.ANSI.cursor(line, col)])
+
+    # render component
+    component.module.render(component.view)
+
+    # restore cursor position
+    Connection.send(state.connection_pid, "\e[u")
 
     state
   end

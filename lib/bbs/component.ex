@@ -3,7 +3,7 @@ defmodule BBS.Component do
 
   @callback mount(any, BBS.View.t()) :: {:ok, BBS.View.t()}
   @callback update(any, BBS.View.t()) :: {:ok, BBS.View.t()}
-  @callback render(assigns) :: iodata
+  @callback render(BBS.View.t()) :: any
 
   defmacro __using__(_) do
     quote do
